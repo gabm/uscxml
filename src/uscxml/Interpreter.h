@@ -107,8 +107,7 @@ public:
 	 * Instantiate an Interpeter with a document located at an URL.
 	 * @param url An absolute URL to locate the SCXML document.
 	 */
-	static Interpreter fromURL(const std::string& url);
-
+	static Interpreter fromURL(const std::string& url, std::shared_ptr<XERCESC_NS::ErrorHandler> errorHandler = nullptr, bool withSchemeValidation = false );
 	/**
 	 * Instantiate an Interpeter as a copy of another.
 	 * @param other The other interpreter.

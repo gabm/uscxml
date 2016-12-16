@@ -144,7 +144,7 @@ Interpreter Interpreter::fromDocument(XERCESC_NS::DOMDocument* dom, const std::s
 	return interpreter;
 }
 
-Interpreter Interpreter::fromURL(const std::string& url) {
+Interpreter Interpreter::fromURL(const std::string& url, std::shared_ptr<XERCESC_NS::ErrorHandler> errorHandler, bool withSchemeValidation ) {
 	URL absUrl = normalizeURL(url);
 
 	std::shared_ptr<InterpreterImpl> interpreterImpl(new InterpreterImpl());
@@ -154,11 +154,16 @@ Interpreter Interpreter::fromURL(const std::string& url) {
 	parser->setValidationScheme(XERCESC_NS::XercesDOMParser::Val_Always);
 	parser->setDoNamespaces(true);
 
-	// we do not have a real schema anyway
-	parser->useScanner(XERCESC_NS::XMLUni::fgWFXMLScanner);
+	if (withSchemeValidation) {
+		parser->setDoSchema(true);
+		parser->useScanner(XERCESC_NS::XMLUni::fgSGXMLScanner);
+	} else {
+		parser->useScanner(XERCESC_NS::XMLUni::fgWFXMLScanner);
+	}
 
-	std::unique_ptr<XERCESC_NS::ErrorHandler> errHandler(new XERCESC_NS::HandlerBase());
-	parser->setErrorHandler(errHandler.get());
+	if (!errorHandler) errorHandler = std::make_shared<XERCESC_NS::HandlerBase>();
+
+	parser->setErrorHandler(errorHandler.get());
 
 
 	try {
