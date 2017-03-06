@@ -446,6 +446,8 @@ set_property(TARGET uscxml PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET uscxml PROPERTY SOVERSION ${USCXML_VERSION})
 if (USCXML_PREREQS)
     add_dependencies(uscxml ${USCXML_PREREQS})
+else ()
+    message(FATAL_ERROR "Else branch used!")
 endif()
 install_library(TARGETS uscxml)
 
